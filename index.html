@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melody - Music Streaming</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: #101014;
+    color: white;
+    padding-bottom: 110px;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    background: #18181f;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #c084fc;
+    margin-bottom: 45px;
+}
+
+.sidebar h4 {
+    color: #888;
+    margin: 25px 0 15px;
+}
+
+.sidebar a {
+    display: block;
+    color: #ccc;
+    text-decoration: none;
+    padding: 13px 10px;
+    border-radius: 8px;
+    margin-bottom: 7px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #34303f;
+    color: #c084fc;
+}
+
+/* Main */
+main {
+    margin-left: 230px;
+    padding: 30px;
+    width: calc(100% - 230px);
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.search {
+    background: #25252d;
+    border: none;
+    padding: 13px 18px;
+    border-radius: 25px;
+    color: white;
+    width: 280px;
+    outline: none;
+}
+
+.profile {
+    background: #a855f7;
+    padding: 10px 17px;
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+/* Hero */
+.hero {
+    background: linear-gradient(120deg, #7e22ce, #312e81, #111827);
+    padding: 45px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #eee;
+    margin-bottom: 22px;
+}
+
+.hero button {
+    background: white;
+    color: #6b21a8;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Sections */
+.section {
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    margin-bottom: 22px;
+    font-size: 23px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #1c1c24;
+    padding: 14px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    background: #30283b;
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.card p {
+    font-size: 13px;
+    color: #aaa;
+}
+
+/* Artist circles */
+.artist img {
+    border-radius: 50%;
+}
+
+/* Songs */
+.song-list {
+    background: #1c1c24;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.song {
+    display: flex;
+    align-items: center;
+    padding: 13px 18px;
+    gap: 15px;
+    border-bottom: 1px solid #303039;
+}
+
+.song img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.song-info {
+    flex: 1;
+}
+
+.song-info p {
+    color: #999;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.song span {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* Player */
+.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #202027;
+    border-top: 1px solid #393942;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    z-index: 10;
+}
+
+.now-playing {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 25%;
+}
+
+.now-playing img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.now-playing p {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.controls {
+    text-align: center;
+    flex: 1;
+}
+
+.controls button {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 23px;
+    margin: 0 12px;
+    cursor: pointer;
+}
+
+.progress {
+    width: 100%;
+    max-width: 350px;
+    height: 5px;
+    background: #555;
+    border-radius: 10px;
+    margin: 10px auto 0;
+}
+
+.progress div {
+    width: 40%;
+    height: 100%;
+    background: #c084fc;
+    border-radius: 10px;
+}
+
+.volume {
+    width: 25%;
+    text-align: right;
+    color: #ccc;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    .sidebar {
+        width: 65px;
+        padding: 20px 8px;
+    }
+
+    .logo {
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .sidebar h4 {
+        display: none;
+    }
+
+    .sidebar a {
+        font-size: 0;
+        text-align: center;
+    }
+
+    main {
+        margin-left: 65px;
+        width: calc(100% - 65px);
+        padding: 18px;
+    }
+
+    .hero {
+        padding: 28px 20px;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .player {
+        padding: 12px;
+    }
+
+    .now-playing {
+        width: auto;
+    }
+
+    .now-playing h4 {
+        font-size: 12px;
+    }
+
+    .volume {
+        display: none;
+    }
+
+    .controls button {
+        margin: 0 5px;
+    }
+}
+
+@media(max-width: 450px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .now-playing img {
+        width: 38px;
+        height: 38px;
+    }
+
+    .now-playing p {
+        display: none;
+    }
+
+    .controls button {
+        font-size: 18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">♫ MELODY</div>
+
+    <h4>MENU</h4>
+    <a href="#" class="active">⌂ Home</a>
+    <a href="#artists">♬ Artists</a>
+    <a href="#albums">▣ Albums</a>
+    <a href="#playlists">☷ Playlists</a>
+
+    <h4>YOUR MUSIC</h4>
+    <a href="#recent">◷ Recently Played</a>
+    <a href="#popular">♥ Popular Tracks</a>
+</aside>
+
+<!-- Main Content -->
+<main>
+
+<div class="topbar">
+    <input class="search" type="search"
+    placeholder="Search songs, artists, albums...">
+    <div class="profile">G Guest</div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+    <h1>Feel Every Beat 🎧</h1>
+    <p>Discover new music, explore artists and enjoy your favourite songs.</p>
+    <button onclick="document.getElementById('playlists').scrollIntoView({behavior:'smooth'})">
+        Explore Music ▶
+    </button>
+</section>
+
+<!-- Artists -->
+<section class="section" id="artists">
+    <h2>Popular Artists</h2>
+    <div class="cards">
+
+        <div class="card artist">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400">
+            <h3>Arijit Singh</h3>
+            <p>Indian Singer</p>
+        </div>
+
+        <div class="card artist">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400">
+            <h3>Shreya Ghoshal</h3>
+            <p>Indian Singer</p>
+        </div>
+
+        <div class="card artist">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400">
+            <h3>Anirudh</h3>
+            <p>Music Composer</p>
+        </div>
+
+        <div class="card artist">
+            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400">
+            <h3>Sunidhi Chauhan</h3>
+            <p>Indian Singer</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Albums -->
+<section class="section" id="albums">
+    <h2>Featured Albums</h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400">
+            <h3>Romantic Hits</h3>
+            <p>Love Collection</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400">
+            <h3>Party Nights</h3>
+            <p>Dance Collection</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400">
+            <h3>Acoustic Vibes</h3>
+            <p>Chill Collection</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400">
+            <h3>Melody Mix</h3>
+            <p>Trending Collection</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Playlists -->
+<section class="section" id="playlists">
+    <h2>Made For You</h2>
+    <div class="cards">
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=400">
+            <h3>Chill Vibes</h3>
+            <p>Relax and enjoy</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400">
+            <h3>Party Mix</h3>
+            <p>Feel the energy</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400">
+            <h3>Trending Now</h3>
+            <p>Top hits of the week</p>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400">
+            <h3>Night Music</h3>
+            <p>Late night favourites</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- Recently Played -->
+<section class="section" id="recent">
+    <h2>Recently Played</h2>
+
+    <div class="song-list">
+        <div class="song">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100">
+            <div class="song-info">
+                <h4>Perfect Melody</h4>
+                <p>Arijit Singh</p>
+            </div>
+            <span>3:45</span>
+        </div>
+
+        <div class="song">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=100">
+            <div class="song-info">
+                <h4>Dreams</h4>
+                <p>Shreya Ghoshal</p>
+            </div>
+            <span>4:10</span>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Tracks -->
+<section class="section" id="popular">
+    <h2>Popular Tracks 🔥</h2>
+
+    <div class="song-list">
+        <div class="song">
+            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100">
+            <div class="song-info">
+                <h4>Energy Beats</h4>
+                <p>DJ Music</p>
+            </div>
+            <span>3:20</span>
+        </div>
+
+        <div class="song">
+            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=100">
+            <div class="song-info">
+                <h4>Summer Vibes</h4>
+                <p>Pop Collection</p>
+            </div>
+            <span>3:55</span>
+        </div>
+
+        <div class="song">
+            <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=100">
+            <div class="song-info">
+                <h4>Love Forever</h4>
+                <p>Romantic Hits</p>
+            </div>
+            <span>4:05</span>
+        </div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<!-- Music Player -->
+<div class="player">
+
+    <div class="now-playing">
+        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100">
+        <div>
+            <h4>Perfect Melody</h4>
+            <p>Arijit Singh</p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button aria-label="Previous song">⏮</button>
+        <button aria-label="Play">▶</button>
+        <button aria-label="Next song">⏭</button>
+        <div class="progress"><div></div></div>
+    </div>
+
+    <div class="volume">🔊 ━━━━━</div>
+
+</div>
+
+</body>
+</html>
